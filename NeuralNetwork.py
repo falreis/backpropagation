@@ -58,7 +58,7 @@ class MLP:
     
     #### Feed Forward ####
     def feed_forward(self, X):
-        outputs = []
+        outputs = [X]
         
         logits = np.dot(X, self.weights[0]) + self.biases[0]
         
@@ -85,7 +85,7 @@ class MLP:
         weights_gradients.append(grad)
         biases_gradients.append(error)
         
-        for i in range(len(outputs) - 2, 1, -1):
+        for i in range(len(self.weights) - 2, 1, -1):
             d = self.d_sigmoid(outputs[i])
             error = np.dot(error, self.weights[i+1].T) * d
             
