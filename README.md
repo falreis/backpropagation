@@ -47,3 +47,5 @@ As such, only about 70% of the time I find that the network was able to 'learn'.
 - Momentum
 - Gradient Clipping
 - Choose activations per layer
+
+TESTING COMMIT
