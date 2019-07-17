@@ -1,7 +1,7 @@
 # Backpropagation and Gradient Descent
 ### Author: Jay Mody
 ---
-This repo is a workspace for me to develop my own gradient descent algorithims implemented in python from scratch (no use of machine learning libraries except to generate data).
+This repo is a workspace for me to develop my own gradient descent algorithims implemented in python from scratch using only numpy.
 
 ## Main NN Code
 ```python
@@ -155,7 +155,7 @@ So far, i've been able to succesfully claissify clusters of data (multiple class
 - Sometimes the network will get stuck in a local minumum
 - Since weights are initialized randomly, some initial configurations fail despite many epochs of training (no learning, local minimum)
 - Activations hugely affected my results
-- The netowkr suffers from vanishing gradient
+- The network suffers from vanishing gradient
 
 
 As such, only about 70% of the time I find that the network was able to 'learn'. Although, I'm happy with the results, as this was more an excersize for me to understand backprop and gradient descent than actually implementing it for use. Here's an example:
