@@ -1,22 +1,21 @@
 # Backpropagation and Gradient Descent
-### Author: Jay Mody
+### Author: Jay Mody (version of Felipe Reis)
 ---
 This repo is a workspace for me to develop my own gradient descent algorithims implemented in python from scratch using only numpy.
 
 ## Main NN Code
 ```python
-#### Imports ####
+
 import numpy as np
 
-#### Neural Network Class ####
 class MLP:
     ##### Constructor ####
-    def __init__(self, n_input_nodes, hidden_nodes, n_output_nodes, lr):
+    def __init__(self, n_input_nodes, hidden_nodes, n_output_nodes, lr, activation_name):
         ## Network ##
         self.n_input_nodes = n_input_nodes
         self.n_output_nodes = n_output_nodes
         
-        self.nodes = hidden_nodes
+        self.nodes = hidden_nodes.copy()
         self.nodes.insert(0, n_input_nodes)
         self.nodes.append(n_output_nodes)
         
@@ -30,36 +29,45 @@ class MLP:
         ## Learning Rate ##
         self.lr = lr
         
-        ## Activation Functions ##
-        # Linear Activation
-        self.linear = lambda x: x
-        self.d_linear = lambda x: np.ones(x.shape)
+        #set activation
+        self.setActivation(activation_name)
         
-        # Relu Activation
-        def relu(x):
-            x[x<0] = 0
-            return x
-        def d_relu(out):
-            out: x[x>0] = 1
-            return out
-        self.relu = relu
-        self.d_relu = d_relu
+    def setActivation(self, activation_name):
+        if activation_name == 'linear':
+            self.activation = lambda x: x
+            self.d_activation = lambda x: np.ones(x.shape)
             
-        # Sigmoid Activation
-        self.sigmoid = lambda x: 1 / (1 + np.exp(-x))
-        self.d_sigmoid = lambda out: out * (1 - out)  # assumes out is tanh(x)
+        elif activation_name == 'relu':
+            def relu(x):
+                x[x<0] = 0
+                return x
+            def d_relu(out):
+                out: x[x>0] = 1
+                return out
+            
+            self.activation = relu
+            self.d_activation = d_relu
         
-        # Hyperbolic Tangent Activation
-        self.tanh = lambda x: np.tanh(x)
-        self.d_tanh = lambda out: 1 - out**2 # assumes out is tanh(x)
+        elif activation_name == 'sigmoid':
+            self.activation = lambda x: 1 / (1 + np.exp(-x))
+            self.d_activation = lambda out: out * (1 - out)
         
+        elif activation_name == 'tanh':
+            self.activation = lambda x: np.tanh(x)
+            self.d_activation = lambda out: 1 - (out**2)
+            
+        else:
+            raise Exception('Not implemented activation')
+    
     def getWeights(self):
         return self.weights.copy()
+    
     def getBiases(self):
         return self.biases.copy()
     
     def setWeights(self, weights):
         self.weights = weights.copy()
+        
     def setBiases(self, biases):
         self.biases = biases.copy()
     
@@ -70,11 +78,11 @@ class MLP:
         logits = np.dot(X, self.weights[0]) + self.biases[0]
         
         for i in range(1, len(self.nodes) - 1):
-            out = self.sigmoid(logits)
+            out = self.activation(logits)
             outputs.append(out)
             logits = np.dot(out, self.weights[i]) + self.biases[i]
         
-        out = self.sigmoid(logits)
+        out = self.activation(logits)
         outputs.append(out)
         
         return outputs
@@ -85,7 +93,7 @@ class MLP:
         biases_gradients = []
         
         d1 = y - outputs[-1]
-        d2 = self.d_sigmoid(outputs[-1])
+        d2 = self.d_activation(outputs[-1])
         error = d1 * d2
         
         grad = outputs[-2].T * error 
@@ -93,7 +101,7 @@ class MLP:
         biases_gradients.append(error)
         
         for i in range(len(self.weights) - 2, 1, -1):
-            d = self.d_sigmoid(outputs[i])
+            d = self.d_activation(outputs[i])
             error = np.dot(error, self.weights[i+1].T) * d
             
             grad = outputs[i-1].T * error 
@@ -145,6 +153,7 @@ class MLP:
                 n_correct += 1
 
         return n_correct / len(targets)
+
  ```
 
 
